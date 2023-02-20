@@ -1,6 +1,9 @@
 
 #include "hero.hpp"
 #include "platforms.hpp"
+#include "coin.hpp"
+
+extern coin Coin;
 
 extern View view;
 void NewView(double x, double y);
@@ -17,8 +20,9 @@ hero::hero(){
     Width = 25;
     Height = 28;
     dir = 1;
-    xSpeed = 400;
+    xSpeed = 500;
     reset();
+    
 
     image.loadFromFile("images/DoodleJumpTextures.png");
     image.createMaskFromColor(Color(255,255,255));
@@ -32,6 +36,7 @@ hero::hero(){
 }
 
 void hero::reset(){
+    SpaceKD = 0;
     ySpeed = 0;
     x = width/2 - 2 * Width;
     y = height - Height * Scale - 300; 
@@ -67,11 +72,27 @@ void hero::update(signed long long time_as_microseconds){
     x = sprite.getPosition().x;
     y = sprite.getPosition().y;
 
+    if (this->dir == 1 && x <= 0 - Width * Scale) sprite.setPosition(width, y);
+    else if( this->dir == 2 && x >= width) sprite.setPosition(0 - this->Width * Scale, y);
+    x = sprite.getPosition().x;
+
     if (OnThePlatform(*this, Platforms) && ySpeed > 0) ySpeed = -2;
     if (y <= MaxY) MaxY = y;
     if (MaxY == y){
         NewView(view.getCenter().x, y);
     }
+    if (SpaceKD > 0) SpaceKD -= time_as_microseconds / 1e6;
+    else SpaceKD = 0;
+}
+
+void hero::Space(double time_as_microseconds){
+    if (SpaceKD <= 0) {
+        SpaceKD = 5;
+        ySpeed = -2;
+    }
+}
+float hero::GetSpaceKD(){
+    return SpaceKD;
 }
 
 bool OnThePlatform(hero& Hero, platforms& Platforms){
@@ -82,3 +103,4 @@ bool OnThePlatform(hero& Hero, platforms& Platforms){
     }
     return false;
 };
+
