@@ -6,6 +6,7 @@ add_executable(DoodleJump
     src/hero.cpp
     src/platforms.cpp
     src/coin.cpp
+    src/jetpack.cpp
 )
 
 target_link_libraries(DoodleJump sfml-graphics sfml-window sfml-system)

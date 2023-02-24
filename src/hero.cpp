@@ -2,12 +2,15 @@
 #include "hero.hpp"
 #include "platforms.hpp"
 #include "coin.hpp"
+#include "jetpack.hpp"
+#include <iostream>
 
 extern coin Coin;
+extern platforms Platforms;
+extern jetpack Jetpack;
 
 extern View view;
-void NewView(double x, double y);
-extern platforms Platforms;
+
 extern int height;
 extern int width;
 
@@ -15,6 +18,7 @@ extern int Scale;
 double g = 4;
 
 bool OnThePlatform(double x, double y);
+void NewView(double x, double y);
 
 hero::hero(){
     Width = 25;
@@ -83,6 +87,9 @@ void hero::update(signed long long time_as_microseconds){
     }
     if (SpaceKD > 0) SpaceKD -= time_as_microseconds / 1e6;
     else SpaceKD = 0;
+
+    if (IfEncounteredJetpack(*this, Jetpack)) ySpeed = -5;
+
 }
 
 void hero::Space(double time_as_microseconds){
@@ -104,3 +111,13 @@ bool OnThePlatform(hero& Hero, platforms& Platforms){
     return false;
 };
 
+bool IfEncounteredJetpack(hero& Hero, jetpack& Jetpack){
+    
+    if ((Hero.x <= (Jetpack.x + Jetpack.JetpackWidth * Scale) && (Hero.x + Hero.Width * Scale) >= Jetpack.x) && 
+        (Jetpack.y <= (Hero.y + Hero.Height * Scale) && (Jetpack.y + Jetpack.JetpackHeight * Scale >= Hero.y))) {
+            
+            Jetpack.reset();
+            return true;
+        }
+    else return false;
+}

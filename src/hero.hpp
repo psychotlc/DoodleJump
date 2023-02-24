@@ -5,11 +5,13 @@
 
 class platforms;
 class coin;
+class jetpack;
 
 using namespace sf;
 
 class hero{
     friend coin;
+    friend bool IfEncounteredJetpack(hero& Hero, jetpack& Jetpack);
     friend bool ScoreUpdate(hero& Hero, coin& Coin);
     friend bool OnThePlatform(hero& Hero, platforms& Platforms);
 private:

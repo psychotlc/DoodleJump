@@ -8,10 +8,12 @@ using namespace sf;
 #include "hero.hpp"
 #include "platforms.hpp"
 #include "coin.hpp"
+#include "jetpack.hpp"
 
 hero Hero;
 platforms Platforms;
 coin Coin;
+jetpack Jetpack;
 
 
 int Scale = 3;
@@ -60,6 +62,7 @@ int main(){
         if (Keyboard::isKeyPressed(Keyboard::Space)) Hero.Space(time);
         Coin.update(time);
         Hero.update(time);
+        Jetpack.update();
         Platforms.update();
         window.setView(view);
 
@@ -84,7 +87,10 @@ int main(){
         for(auto it = Platforms.getBegIt(); it != Platforms.getEndIt(); it++){
             window.draw(*it);    
         }
+
         window.draw(Hero.getSprite());
+        window.draw(Jetpack.getSprite());
+
         window.display();
     }
     
@@ -99,7 +105,8 @@ void setSpaceKDPosition(Text& text){
 }
 
 bool ScoreUpdate(hero& Hero, coin& Coin){
-    if ((Hero.x <= (Coin.x + Coin.CoinWidth * Scale) && (Hero.x + Hero.Width * Scale) >= Coin.x) && (Coin.y <= (Hero.y + Hero.Height * Scale) && Coin.y >= Hero.y)){
+    if ((Hero.x <= (Coin.x + Coin.CoinWidth * Scale) && (Hero.x + Hero.Width * Scale) >= Coin.x) 
+    && (Coin.y <= (Hero.y + Hero.Height * Scale) && Coin.y >= Hero.y)){
         Coin.reset();
         Score++;
         return true;
