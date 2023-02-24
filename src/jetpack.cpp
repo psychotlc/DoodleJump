@@ -15,7 +15,7 @@ jetpack::jetpack(){
     sprite.setTexture(texture);
     sprite.setTextureRect(IntRect(46,94,JetpackWidth,JetpackHeight));
     sprite.scale(Scale, Scale);
-    sprite.setPosition(500, 500);
+    reset();
     x = sprite.getPosition().x;
     y = sprite.getPosition().y;
     

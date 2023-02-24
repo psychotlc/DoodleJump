@@ -25,6 +25,7 @@ int height = 1000;
 void setScorePosition(Text& text);
 bool ScoreUpdate(hero& Hero, coin& Coin);
 void setSpaceKDPosition(Text& text);
+bool GameOwer = false;
 
 int main(){
     RenderWindow window(VideoMode(width, height), "DoodleJump");
@@ -40,6 +41,9 @@ int main(){
     Text SpaceKDText("JumpKD: " + std::to_string(Hero.GetSpaceKD()), font, 50);
     SpaceKDText.setFillColor(Color(0, 0, 0));
 
+    Text GameOwerText("Game Ower", font, 100);
+    GameOwerText.setFillColor(Color(255,0,0));
+
     
     Clock clock;
 
@@ -48,23 +52,29 @@ int main(){
         if (window.pollEvent(event)) if(event.type == Event::Closed) window.close();
         signed long long time = clock.getElapsedTime().asMicroseconds();
         clock.restart();
+        
         if (Keyboard::isKeyPressed(Keyboard::R)){
             Hero.reset();
             Platforms.reset();
             Coin.reset();
+            GameOwer = false;
             Score = 0;
             ScoreText.setString("Score: " + std::to_string(Score));
         }
+
 
         if (Keyboard::isKeyPressed(Keyboard::A)) Hero.setDir(1);
         else if (Keyboard::isKeyPressed(Keyboard::D)) Hero.setDir(2);
         else Hero.setDir(0);
         if (Keyboard::isKeyPressed(Keyboard::Space)) Hero.Space(time);
-        Coin.update(time);
-        Hero.update(time);
-        Jetpack.update();
-        Platforms.update();
-        window.setView(view);
+
+        if (!GameOwer){
+            Jetpack.update();
+            Platforms.update();
+            window.setView(view);
+            Coin.update(time);
+            Hero.update(time);  
+        }      
 
         if (ScoreUpdate(Hero, Coin)) 
         {
@@ -77,7 +87,7 @@ int main(){
         window.clear(Color(255, 255, 255));
 
         window.draw(ScoreText);
-
+        
         SpaceKDText.setString("JumpKD: " + std::to_string(int(Hero.GetSpaceKD())));
 
         window.draw(SpaceKDText);
@@ -87,9 +97,13 @@ int main(){
         for(auto it = Platforms.getBegIt(); it != Platforms.getEndIt(); it++){
             window.draw(*it);    
         }
-
         window.draw(Hero.getSprite());
         window.draw(Jetpack.getSprite());
+
+        if (GameOwer){
+            GameOwerText.setPosition(width/6, view.getCenter().y - GameOwerText.getCharacterSize());
+            window.draw(GameOwerText);
+        }
 
         window.display();
     }

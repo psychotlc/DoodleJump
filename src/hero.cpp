@@ -13,6 +13,7 @@ extern View view;
 
 extern int height;
 extern int width;
+extern bool GameOwer;
 
 extern int Scale;
 double g = 4;
@@ -75,6 +76,8 @@ void hero::update(signed long long time_as_microseconds){
     
     x = sprite.getPosition().x;
     y = sprite.getPosition().y;
+
+    if (y - view.getCenter().y >= height/2) GameOwer = true;
 
     if (this->dir == 1 && x <= 0 - Width * Scale) sprite.setPosition(width, y);
     else if( this->dir == 2 && x >= width) sprite.setPosition(0 - this->Width * Scale, y);
